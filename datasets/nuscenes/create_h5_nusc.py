@@ -3,7 +3,8 @@ import argparse
 import h5py
 import os
 import numpy as np
-
+# import sys
+# sys.path.append('./')
 from datasets.nuscenes.raw_dataset import NuScenesDataset
 
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
 
     save_dir = os.path.join(args.output_h5_path, args.split_name)
     nuscenes = NuScenesDataset(data_root=args.raw_dataset_path, split_name=args.split_name,
-                               version='v1.0-trainval', ego_range=args.ego_range, num_others=max_num_agents)
+                               version='v1.0-mini', ego_range=args.ego_range, num_others=max_num_agents)
     num_scenes = len(nuscenes)
 
     f = h5py.File(os.path.join(args.output_h5_path, args.split_name + '_dataset.hdf5'), 'w')
