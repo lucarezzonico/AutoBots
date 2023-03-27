@@ -461,7 +461,7 @@ class Trainer:
 
 
 CONFIG_PATH = os.getenv('NUPLAN_HYDRA_CONFIG_PATH', 'config/training')
-CONFIG_NAME = 'default_training_2'
+CONFIG_NAME = 'default_training_cfg'
 
 @hydra.main(config_path=CONFIG_PATH, config_name=CONFIG_NAME)
 def main(cfg: DictConfig) -> Optional[Trainer]: # Optional[TrainingEngine]:
@@ -471,7 +471,7 @@ if __name__ == "__main__":
     
     # Location of path with all training configs
     CONFIG_PATH = 'config/training'
-    CONFIG_NAME = 'default_training_2'
+    CONFIG_NAME = 'default_training_cfg'
 
     # Create a temporary directory to store the cache and experiment artifacts
     SAVE_DIR = os.getenv('NUSCENES_EXP_ROOT', '/home/luca/Documents/nuscenes/exp')

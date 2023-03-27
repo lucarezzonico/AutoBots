@@ -1,0 +1,34 @@
+# Section: General Configuration
+exp_id: test
+seed: 1
+disable_cuda: False
+save_dir: "."
+
+# Section: Dataset
+dataset: Nuscenes
+dataset_path: /data1/nuscenes/h5_files
+use_map_lanes: True # using the raw road segments in the map
+use_map_image: False # using the Birds-eye-view image of the road network
+
+# Section: Algorithm
+model_type: Autobot-Ego # Autobot-Joint # using the raw road segments in the map
+num_modes: 10
+hidden_size: 128
+num_encoder_layers: 2
+num_decoder_layers: 2
+tx_hidden_size: 384
+tx_num_heads: 16
+dropout: 0.1
+
+# Section: Loss Function
+entropy_weight: 40.0
+kl_weight: 20.0
+use_FDEADE_aux_loss: True
+
+# Section: Training params:
+batch_size: 64
+learning_rate: 0.00075
+adam_epsilon: 0.00075
+learning_rate_sched: [10, 20, 30, 40, 50]
+grad_clip_norm: 5
+num_epochs: 2
