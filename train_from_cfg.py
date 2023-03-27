@@ -476,8 +476,8 @@ if __name__ == "__main__":
     # Create a temporary directory to store the cache and experiment artifacts
     SAVE_DIR = os.getenv('NUSCENES_EXP_ROOT', '/home/luca/Documents/nuscenes/exp')
     # EXPERIMENT = 'AutoBots_experiment'
-    # JOB_NAME = 'AutoBots_model',
-    # TRAINING_MODEL = 'training_AutoBots_model',
+    # JOB_NAME = 'AutoBots_model'
+    # TRAINING_MODEL = 'training_AutoBots_model'
     # LOG_DIR = str(Path(SAVE_DIR) / EXPERIMENT / JOB_NAME)
 
     # Initialize configuration management system
