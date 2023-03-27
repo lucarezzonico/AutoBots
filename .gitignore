@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+## personal
+__pycache__
+dataset/__pycache__
+dataset/argoverse/__pycache__
+dataset/interaction_dataset/__pycache__
+dataset/nuscenes/__pycache__
+dataset/trajnetpp/__pycache__
+outputs
