@@ -219,6 +219,8 @@ class AutoBotEgo(nn.Module):
                                         Bivariate Gaussian distribution.
             mode_probs: shape [B, c] mode probability predictions P(z|X_{1:T_obs})
         '''
+        
+        # print("ego_in = ", ego_in.size(), "\nagents_in = ", agents_in.size(), "\nroads = ", roads.size())
         B = ego_in.size(0)
 
         # Encode all input observations (k_attr --> d_k)
@@ -270,5 +272,7 @@ class AutoBotEgo(nn.Module):
         mode_probs = F.softmax(self.prob_predictor(mode_params_emb).squeeze(-1), dim=0).transpose(0, 1)
 
         # return  [c, T, B, 5], [B, c]
+        # print("out_dists = ", out_dists.size(), "\nmode_probs = ", mode_probs.size())
+        # print(self)
         return out_dists, mode_probs
 

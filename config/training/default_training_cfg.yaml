@@ -14,8 +14,8 @@ use_map_image: False # using the Birds-eye-view image of the road network
 model_type: Autobot-Ego # Autobot-Joint # using the raw road segments in the map
 num_modes: 10
 hidden_size: 128
-num_encoder_layers: 2
-num_decoder_layers: 2
+num_encoder_layers: 1
+num_decoder_layers: 1
 tx_hidden_size: 384
 tx_num_heads: 16
 dropout: 0.1
