@@ -28,9 +28,9 @@ from pathlib import Path
 from torchviz import make_dot
 
 class Trainer:
-    def __init__(self, args, results_dirname):
+    def __init__(self, args):
         self.args = args
-        self.results_dirname = results_dirname
+        self.results_dirname = os.getenv('NUSCENES_EXP_ROOT')
         random.seed(self.args.seed)
         np.random.seed(self.args.seed)
         torch.manual_seed(self.args.seed)
@@ -42,12 +42,10 @@ class Trainer:
 
         self.initialize_dataloaders()
         self.initialize_model()
-        self.optimiser = optim.Adam(self.autobot_model.parameters(), lr=self.args.learning_rate,
-                                    eps=self.args.adam_epsilon)
-        self.optimiser_scheduler = MultiStepLR(self.optimiser, milestones=args.learning_rate_sched, gamma=0.5,
-                                               verbose=True)
+        self.optimiser = optim.Adam(self.autobot_model.parameters(), lr=self.args.learning_rate, eps=self.args.adam_epsilon)
+        self.optimiser_scheduler = MultiStepLR(self.optimiser, milestones=args.learning_rate_sched, gamma=0.5, verbose=True)
 
-        self.writer = SummaryWriter(log_dir=os.path.join(self.results_dirname, "tb_files"))
+        self.writer = SummaryWriter(log_dir=os.path.join(self.results_dirname + "/" + self.args.model_type, "tb_files"))
         self.smallest_minade_k = 5.0  # for computing best models
         self.smallest_minfde_k = 5.0  # for computing best models
 
@@ -464,11 +462,19 @@ class Trainer:
     def net_viz(self):
         dataiter = iter(self.train_loader)
         datainput= next(dataiter)
-        ego_in, ego_out, agents_in, roads = self._data_to_device(datainput)
-        graph_obj=make_dot(self.autobot_model(ego_in, agents_in, roads), params=dict(self.autobot_model.named_parameters()), show_attrs=True, show_saved=True)
-        graph_obj.render(self.args.net_viz_path + "/model_vis/model_vis.dot", view=True)
+
+        if "Ego" in self.args.model_type:
+            ego_in, ego_out, agents_in, roads = self._data_to_device(datainput)
+            graph_obj=make_dot(self.autobot_model(ego_in, agents_in, roads), params=dict(self.autobot_model.named_parameters()), show_attrs=True, show_saved=True)
+        elif "Joint" in self.args.model_type:
+            ego_in, ego_out, agents_in, agents_out, map_lanes, agent_types = self._data_to_device(datainput)
+            graph_obj=make_dot(self.autobot_model(ego_in, agents_in, map_lanes, agent_types), params=dict(self.autobot_model.named_parameters()), show_attrs=True, show_saved=True)
+        else:
+            raise NotImplementedError
+        
+        graph_obj.render(self.results_dirname + "/" + self.args.model_type + "/model_vis/model_vis.dot", view=True)
         print("Model graph rendered.")
-        print("model visualisation saved to " + self.args.net_viz_path + "/model_vis/model_vis.dot")
+        print("model visualisation saved to " + self.results_dirname + "/" + self.args.model_type + "/model_vis/model_vis.dot")
 
 
 
@@ -486,7 +492,7 @@ if __name__ == "__main__":
     CONFIG_NAME = 'default_training_cfg'
 
     # Create a temporary directory to store the cache and experiment artifacts
-    SAVE_DIR = os.getenv('NUSCENES_EXP_ROOT', '/home/luca/Documents/nuscenes/exp')
+    SAVE_DIR = os.getenv('NUSCENES_EXP_ROOT', '/data1/nuscenes/luca/exp')
     # EXPERIMENT = 'AutoBots_experiment'
     # JOB_NAME = 'AutoBots_model'
     # TRAINING_MODEL = 'training_AutoBots_model'
@@ -498,12 +504,11 @@ if __name__ == "__main__":
 
     # Compose the configuration
     cfg = hydra.compose(config_name=CONFIG_NAME)
-    
+    cfg.dataset_path = os.getenv(cfg.dataset_path)
     main(cfg)
 
     # results_dirname = create_results_folder(cfg)
-    results_dirname = SAVE_DIR
     
-    trainer = Trainer(cfg, results_dirname)
+    trainer = Trainer(cfg)
     if cfg.net_viz: trainer.net_viz()   # save visualization graph of the autobot model
     trainer.train()

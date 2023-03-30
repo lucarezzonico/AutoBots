@@ -6,12 +6,12 @@ save_dir: "."
 
 # Section: Dataset
 dataset: Nuscenes
-dataset_path: /data1/nuscenes/h5_files
+dataset_path: NUSCENES_DATA_ROOT   # add env var NUSCENES_DATA_ROOT
 use_map_lanes: True # using the raw road segments in the map
 use_map_image: False # using the Birds-eye-view image of the road network
 
 # Section: Algorithm
-model_type: Autobot-Ego # Autobot-Joint # using the raw road segments in the map
+model_type: Autobot-Ego # Autobot-Ego or Autobot-Joint # using the raw road segments in the map
 num_modes: 10
 hidden_size: 128
 num_encoder_layers: 2
@@ -34,4 +34,3 @@ grad_clip_norm: 5
 num_epochs: 2
 
 net_viz: False
-net_viz_path: /home/luca/Documents/nuscenes/exp
