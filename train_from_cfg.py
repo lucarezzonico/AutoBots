@@ -25,6 +25,8 @@ import hydra
 from typing import Optional
 from pathlib import Path
 
+from torchviz import make_dot
+
 class Trainer:
     def __init__(self, args, results_dirname):
         self.args = args
@@ -457,6 +459,16 @@ class Trainer:
             self.autobotjoint_train()
         else:
             raise NotImplementedError
+        
+        
+    def net_viz(self):
+        dataiter = iter(self.train_loader)
+        datainput= next(dataiter)
+        ego_in, ego_out, agents_in, roads = self._data_to_device(datainput)
+        graph_obj=make_dot(self.autobot_model(ego_in, agents_in, roads), params=dict(self.autobot_model.named_parameters()), show_attrs=True, show_saved=True)
+        graph_obj.render(self.args.net_viz_path + "/model_vis/model_vis.dot", view=True)
+        print("Model graph rendered.")
+        print("model visualisation saved to " + self.args.net_viz_path + "/model_vis/model_vis.dot")
 
 
 
@@ -493,4 +505,5 @@ if __name__ == "__main__":
     results_dirname = SAVE_DIR
     
     trainer = Trainer(cfg, results_dirname)
+    if cfg.net_viz: trainer.net_viz()   # save visualization graph of the autobot model
     trainer.train()

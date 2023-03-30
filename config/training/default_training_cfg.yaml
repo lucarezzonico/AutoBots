@@ -32,3 +32,6 @@ adam_epsilon: 0.00075
 learning_rate_sched: [10, 20, 30, 40, 50]
 grad_clip_norm: 5
 num_epochs: 2
+
+net_viz: False
+net_viz_path: /home/luca/Documents/nuscenes/exp
